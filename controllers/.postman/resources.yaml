@@ -1,0 +1,7 @@
+workspace:
+  id: 5fed871e-e261-42a3-83d5-dcf7d9d32aae
+cloudResources:
+  collections:
+    ../postman/collections/ecommerce_2: 55166814-91fbcba2-d679-4b3b-b14d-152718030b7e
+  globals:
+    ../postman/globals/workspace.globals.yaml: 5db0f768-b815-46b6-82e6-5a6224232394

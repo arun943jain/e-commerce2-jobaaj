@@ -1,5 +1,4 @@
 import mongoose from "mongoose"
-import Address from "./Address"
 
 const orderSchema = new mongoose.Schema({
     items: [{
@@ -16,7 +15,6 @@ const orderSchema = new mongoose.Schema({
 
     method: {
         type: String,
-        enum: ["Cod", "Pay online"],
         required: true
     },
     paymentInfo: {
@@ -34,6 +32,10 @@ const orderSchema = new mongoose.Schema({
     address: {
         type: String,
         required: true
+    },
+    status: {
+        type: String,
+        default: "Pending"
     },
     paidAt: {
         type: String
