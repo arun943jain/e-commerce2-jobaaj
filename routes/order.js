@@ -1,6 +1,6 @@
 import express from "express"
 import { isAuth } from "../middlewares/isAuth.js"
-import { getAllOrders, getAllOrdersAdmin, getMyorder, newOrderCod, updateOrderStatus } from "../controllers/order.controller.js"
+import { getAllOrders, getAllOrdersAdmin, getMyorder, getStats, newOrderCod, updateOrderStatus } from "../controllers/order.controller.js"
 
 const router = express.Router()
 
@@ -9,5 +9,6 @@ router.get("/order/all", isAuth, getAllOrders)
 router.get("/order/admin/all", isAuth, getAllOrdersAdmin)
 router.get("/order/:id", isAuth, getMyorder)
 router.put("/order/:id", isAuth, updateOrderStatus)
+router.get("/stats", isAuth, getStats)
 
 export default router

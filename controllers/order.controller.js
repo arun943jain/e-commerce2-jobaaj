@@ -96,3 +96,26 @@ export const updateOrderStatus = tryCatch(async(req,res)=>{
 
     res.json({message: "Order status updated successfully", order})
 })
+
+export const getStats = tryCatch(async(req,res)=>{
+    if(req.user.role !== "admin") return res.status(403).json({message: "You are not admin"})
+     
+    const cod = await Order.find({method: "cod"}).countDocuments()
+    const online = await Order.find({method: "online"}).countDocuments()
+
+    const products = await Product.find()
+
+    const data = products.map((p)=>{
+        return {
+            name: p.title,
+            sold: p.sold
+        }
+    })
+
+    res.json({
+        cod,
+        online,
+        data
+    })
+        
+})
