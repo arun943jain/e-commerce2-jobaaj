@@ -1,20 +1,11 @@
+import './config/cloudinary.js'
 import express from 'express'
-import dotenv from 'dotenv'
-import connectDb from './utils/db.js'
+import connectDb from './config/db.js'
 import userRoutes from './routes/user.js'
 import productRoutes from './routes/product.js'
 import cartRoutes from './routes/cart.js'
 import addressRoutes from './routes/address.js'
 import orderRoutes from './routes/order.js'
-import cloudinary from 'cloudinary'
-
-dotenv.config()
-
-cloudinary.v2.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-});
 
 const app = express()
 

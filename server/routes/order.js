@@ -1,5 +1,5 @@
 import express from "express"
-import { isAuth } from "../middlewares/isAuth.js"
+import { isAuth } from "../middleware/isAuth.js"
 import { getAllOrders, getAllOrdersAdmin, getMyorder, getStats, newOrderCod, updateOrderStatus } from "../controllers/order.controller.js"
 
 const router = express.Router()
