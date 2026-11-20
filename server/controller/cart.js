@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
-import TryCatch from "../utils/TryCatch.js";
+import tryCatch from "../utils/tryCatch.js";
 
-export const addToCart = TryCatch(async (req, res) => {
+export const addToCart = tryCatch(async (req, res) => {
   const { product } = req.body;
 
   if (!mongoose.isValidObjectId(product)) {
@@ -45,7 +45,7 @@ export const addToCart = TryCatch(async (req, res) => {
   return res.json({ message: "Product added to cart" });
 });
 
-export const removeFromCart = TryCatch(async (req, res) => {
+export const removeFromCart = tryCatch(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).json({ message: "Invalid cart item id" });
   }
@@ -64,7 +64,7 @@ export const removeFromCart = TryCatch(async (req, res) => {
   return res.json({ message: "Product removed from cart" });
 });
 
-export const updateCart = TryCatch(async (req, res) => {
+export const updateCart = tryCatch(async (req, res) => {
   const { action } = req.query;
 
   if (!["inc", "dec"].includes(action)) {
@@ -114,7 +114,7 @@ export const updateCart = TryCatch(async (req, res) => {
   return res.json({ message: "Cart updated successfully" });
 });
 
-export const fetchCart = TryCatch(async (req, res) => {
+export const fetchCart = tryCatch(async (req, res) => {
   const cart = await Cart.find({ user: req.user._id }).populate("product");
 
   const validCart = cart.filter((item) => item.product);

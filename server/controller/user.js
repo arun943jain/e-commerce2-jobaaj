@@ -3,7 +3,7 @@ import Otp from "../models/Otp.js";
 import User from "../models/User.js";
 import { getEnv } from "../utils/env.js";
 import sendOtp from "../utils/sendOtp.js";
-import TryCatch from "../utils/TryCatch.js";
+import tryCatch from "../utils/tryCatch.js";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -12,7 +12,7 @@ const createToken = (userId) =>
     expiresIn: "15d",
   });
 
-export const loginUser = TryCatch(async (req, res) => {
+export const loginUser = tryCatch(async (req, res) => {
   const email = String(req.body.email ?? "").trim();
 
   if (!emailPattern.test(email)) {
@@ -34,7 +34,7 @@ export const loginUser = TryCatch(async (req, res) => {
   return res.json({ message: "OTP sent to your email" });
 });
 
-export const verifyUser = TryCatch(async (req, res) => {
+export const verifyUser = tryCatch(async (req, res) => {
   const email = String(req.body.email ?? "").trim();
   const otp = Number(req.body.otp);
 
@@ -63,7 +63,7 @@ export const verifyUser = TryCatch(async (req, res) => {
   });
 });
 
-export const myProfile = TryCatch(async (req, res) => {
+export const myProfile = tryCatch(async (req, res) => {
   const user = await User.findById(req.user._id);
 
   return res.json(user);

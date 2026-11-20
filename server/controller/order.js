@@ -15,7 +15,7 @@ import {
   sessionMatchesOrder,
 } from "../utils/payment.js";
 import sendOrderConfirmation from "../utils/sendOrderConfirmation.js";
-import TryCatch from "../utils/TryCatch.js";
+import tryCatch from "../utils/tryCatch.js";
 
 const restoreStock = async (items) => {
   await Promise.all(
@@ -52,7 +52,7 @@ const reserveStock = async (items) => {
   }
 };
 
-export const newOrderCod = TryCatch(async (req, res) => {
+export const newOrderCod = tryCatch(async (req, res) => {
   const { method, phone, address } = req.body;
 
   if (String(method ?? "").toLowerCase() !== "cod") {
@@ -172,7 +172,7 @@ export const newOrderCod = TryCatch(async (req, res) => {
   });
 });
 
-export const getAllOrders = TryCatch(async (req, res) => {
+export const getAllOrders = tryCatch(async (req, res) => {
   const orders = await Order.find({
     user: req.user._id,
     $or: [{ method: "cod" }, { method: "online", paymentStatus: "paid" }],
@@ -183,7 +183,7 @@ export const getAllOrders = TryCatch(async (req, res) => {
   return res.json({ orders });
 });
 
-export const getAllOrdersAdmin = TryCatch(async (req, res) => {
+export const getAllOrdersAdmin = tryCatch(async (req, res) => {
   if (req.user.role !== "admin") {
     return res.status(403).json({ message: "You are not admin" });
   }
@@ -193,7 +193,7 @@ export const getAllOrdersAdmin = TryCatch(async (req, res) => {
   return res.json(orders);
 });
 
-export const getMyOrder = TryCatch(async (req, res) => {
+export const getMyOrder = tryCatch(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).json({ message: "Invalid order id" });
   }
@@ -215,7 +215,7 @@ export const getMyOrder = TryCatch(async (req, res) => {
   return res.json(order);
 });
 
-export const updateStatus = TryCatch(async (req, res) => {
+export const updateStatus = tryCatch(async (req, res) => {
   if (req.user.role !== "admin") {
     return res.status(403).json({ message: "You are not admin" });
   }
@@ -247,7 +247,7 @@ export const updateStatus = TryCatch(async (req, res) => {
   });
 });
 
-export const getStats = TryCatch(async (req, res) => {
+export const getStats = tryCatch(async (req, res) => {
   if (req.user.role !== "admin") {
     return res.status(403).json({ message: "You are not admin" });
   }
@@ -352,7 +352,7 @@ export const cancelPendingOrder = async (sessionId) => {
   return claimed;
 };
 
-export const newOrderOnline = TryCatch(async (req, res) => {
+export const newOrderOnline = tryCatch(async (req, res) => {
   const { method, phone, address } = req.body ?? {};
   const input = normalizeOnlineOrderInput({ method, phone, address });
 
@@ -456,7 +456,7 @@ export const newOrderOnline = TryCatch(async (req, res) => {
   });
 });
 
-export const verifyPayment = TryCatch(async (req, res) => {
+export const verifyPayment = tryCatch(async (req, res) => {
   const { sessionId } = req.body ?? {};
 
   if (

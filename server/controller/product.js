@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import cloudinary from "../config/cloudinary.js";
 import Product from "../models/Product.js";
 import bufferGenerator from "../utils/bufferGenerator.js";
-import TryCatch from "../utils/TryCatch.js";
+import tryCatch from "../utils/tryCatch.js";
 
 const isValidObjectId = (id) => mongoose.isValidObjectId(id);
 
@@ -25,7 +25,7 @@ const uploadImages = async (files) => {
   return Promise.all(uploads);
 };
 
-export const createProduct = TryCatch(async (req, res) => {
+export const createProduct = tryCatch(async (req, res) => {
   if (req.user.role !== "admin") {
     return res.status(403).json({ message: "You are not admin" });
   }
@@ -71,7 +71,7 @@ export const createProduct = TryCatch(async (req, res) => {
   });
 });
 
-export const getAllProducts = TryCatch(async (req, res) => {
+export const getAllProducts = tryCatch(async (req, res) => {
   const { search, category, page, sortByPrice } = req.query;
 
   const filter = {};
@@ -111,7 +111,7 @@ export const getAllProducts = TryCatch(async (req, res) => {
   return res.json({ products, categories, totalPages, newProduct });
 });
 
-export const getSingleProduct = TryCatch(async (req, res) => {
+export const getSingleProduct = tryCatch(async (req, res) => {
   if (!isValidObjectId(req.params.id)) {
     return res.status(400).json({ message: "Invalid product id" });
   }
@@ -130,7 +130,7 @@ export const getSingleProduct = TryCatch(async (req, res) => {
   return res.json({ product, relatedProduct });
 });
 
-export const deleteProduct = TryCatch(async (req, res) => {
+export const deleteProduct = tryCatch(async (req, res) => {
   if (req.user.role !== "admin") {
     return res.status(403).json({ message: "You are not admin" });
   }
@@ -148,7 +148,7 @@ export const deleteProduct = TryCatch(async (req, res) => {
   return res.json({ message: "Product deleted successfully" });
 });
 
-export const updateProduct = TryCatch(async (req, res) => {
+export const updateProduct = tryCatch(async (req, res) => {
   if (req.user.role !== "admin") {
     return res.status(403).json({ message: "You are not admin" });
   }
@@ -223,7 +223,7 @@ export const updateProduct = TryCatch(async (req, res) => {
   });
 });
 
-export const updateProductImage = TryCatch(async (req, res) => {
+export const updateProductImage = tryCatch(async (req, res) => {
   if (req.user.role !== "admin") {
     return res.status(403).json({ message: "You are not admin" });
   }

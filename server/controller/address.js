@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 import Address from "../models/Address.js";
-import TryCatch from "../utils/TryCatch.js";
+import tryCatch from "../utils/tryCatch.js";
 
 const parsePhone = (phone) => {
   const value = String(phone ?? "").trim();
   return /^\d{7,15}$/.test(value) ? Number(value) : null;
 };
 
-export const addAddress = TryCatch(async (req, res) => {
+export const addAddress = tryCatch(async (req, res) => {
   const { address, phone } = req.body;
   const trimmedAddress = String(address ?? "").trim();
   const parsedPhone = parsePhone(phone);
@@ -29,13 +29,13 @@ export const addAddress = TryCatch(async (req, res) => {
   return res.status(201).json({ message: "Address created successfully" });
 });
 
-export const getAllAddress = TryCatch(async (req, res) => {
+export const getAllAddress = tryCatch(async (req, res) => {
   const allAddress = await Address.find({ user: req.user._id });
 
   return res.json(allAddress);
 });
 
-export const getSingleAddress = TryCatch(async (req, res) => {
+export const getSingleAddress = tryCatch(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).json({ message: "Invalid address id" });
   }
@@ -52,7 +52,7 @@ export const getSingleAddress = TryCatch(async (req, res) => {
   return res.json(address);
 });
 
-export const updateAddress = TryCatch(async (req, res) => {
+export const updateAddress = tryCatch(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).json({ message: "Invalid address id" });
   }
@@ -81,7 +81,7 @@ export const updateAddress = TryCatch(async (req, res) => {
   return res.json({ message: "Address updated successfully", address });
 });
 
-export const deleteAddress = TryCatch(async (req, res) => {
+export const deleteAddress = tryCatch(async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).json({ message: "Invalid address id" });
   }
