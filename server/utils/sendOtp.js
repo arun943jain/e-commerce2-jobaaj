@@ -1,12 +1,17 @@
 import {createTransport} from "nodemailer"
+import { getEnv } from "./env.js"
 
 const sendOtp = async({email, subject, otp}) => {
+    const user = getEnv("EMAIL_USER", "Gmail")
+    const pass = getEnv("EMAIL_PASSWORD", "Password")
+
     const transport = createTransport({
         host: "smtp.gmail.com",
         port: 465,
+        secure: true,
         auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASSWORD,
+            user,
+            pass,
         }
     })
 
@@ -57,7 +62,7 @@ const sendOtp = async({email, subject, otp}) => {
 </html>`;
 
     await transport.sendMail({
-        from: process.env.EMAIL_USER,
+        from: user,
         to: email,
         subject: subject,
         html

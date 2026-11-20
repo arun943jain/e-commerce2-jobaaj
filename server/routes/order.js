@@ -1,14 +1,26 @@
-import express from "express"
-import { isAuth } from "../middleware/isAuth.js"
-import { getAllOrders, getAllOrdersAdmin, getMyorder, getStats, newOrderCod, updateOrderStatus } from "../controllers/order.controller.js"
+import express from "express";
+import {
+  getAllOrders,
+  getAllOrdersAdmin,
+  getMyOrder,
+  getStats,
+  newOrderCod,
+  newOrderOnline,
+  updateStatus,
+  verifyPayment,
+} from "../controller/order.js";
+import { isAuth } from "../middlewares/isAuth.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/order/new/cod", isAuth, newOrderCod)
-router.get("/order/all", isAuth, getAllOrders)
-router.get("/order/admin/all", isAuth, getAllOrdersAdmin)
-router.get("/order/:id", isAuth, getMyorder)
-router.put("/order/:id", isAuth, updateOrderStatus)
-router.get("/stats", isAuth, getStats)
+router.post("/order/new/cod", isAuth, newOrderCod);
+router.post("/order/new/online", isAuth, newOrderOnline);
+router.post("/order/verify/payment", isAuth, verifyPayment);
+router.get("/order/all", isAuth, getAllOrders);
+router.get("/order/admin/all", isAuth, getAllOrdersAdmin);
+router.get("/order/:id", isAuth, getMyOrder);
+router.post("/order/:id", isAuth, updateStatus);
+router.put("/order/:id", isAuth, updateStatus);
+router.get("/stats", isAuth, getStats);
 
-export default router
+export default router;

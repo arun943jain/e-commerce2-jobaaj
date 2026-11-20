@@ -1,23 +1,37 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
-const cartSchema = new mongoose.Schema({
+const cartSchema = new mongoose.Schema(
+  {
     quantity: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
     product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+      required: true,
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    
-});
+  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
 
-const Cart = mongoose.model("Cart", cartSchema)
+cartSchema
+  .virtual("quauntity")
+  .get(function () {
+    return this.quantity;
+  })
+  .set(function (value) {
+    this.quantity = value;
+  });
+
+export const Cart = mongoose.model("Cart", cartSchema);
 
 export default Cart;

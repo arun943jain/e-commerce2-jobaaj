@@ -1,140 +1,89 @@
-# WellShop — MERN E-Commerce
+# WellShop
 
-A full-stack e-commerce application with a React + Vite frontend and an Express + MongoDB backend.
+WellShop is a React storefront with an Express API. It includes product browsing, a cart, saved addresses, order history, an admin area, email confirmations, cash on delivery, and Stripe checkout.
 
-## Tech Stack
+## Requirements
 
-| Layer | Technologies |
-|---|---|
-| Frontend | React 19, Vite 8, React Router 7, Tailwind CSS 3.4, shadcn/ui (Radix, default style), Lucide |
-| Backend | Node.js, Express 5, Mongoose 9, JWT, Multer, Cloudinary, Nodemailer |
-
-## Project Structure
-
-```text
-2_E-Commerce_2/
-├── client/
-│   ├── public/
-│   ├── src/
-│   │   ├── assets/
-│   │   ├── components/
-│   │   │   └── ui/
-│   │   ├── context/
-│   │   ├── hooks/
-│   │   ├── lib/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   ├── App.jsx
-│   │   ├── index.css
-│   │   └── main.jsx
-│   ├── index.html
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── tailwind.config.js
-│   ├── postcss.config.js
-│   └── components.json
-├── server/
-│   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── models/
-│   ├── routes/
-│   ├── utils/
-│   └── package.json
-├── .gitignore
-└── README.md
-```
-
-## Prerequisites
-
-- Node.js 20.19+ or 22.12+ (required by Vite 8)
+- Node.js 20.19+ or 22.12+
 - npm
-- A MongoDB connection string
-- Cloudinary account and SMTP credentials for image upload and email features
+- MongoDB
+- Cloudinary and SMTP credentials
+- Stripe credentials for online payments (optional if using cash on delivery only)
 
-## Backend Setup
+## Run locally
 
-```bash
+### API
+
+From the project root, install the server packages:
+
+```sh
 cd server
 npm install
 ```
 
-Create `server/.env` with the following keys (values are environment-specific and must not be committed):
+Copy `server/.env.example` to `server/.env` and fill in the MongoDB, JWT, Cloudinary, and email values. The server requires these settings to start. Stripe keys are needed only for online payments. Keep secrets in the server environment and out of the client.
 
-```dotenv
-PORT=5000
-MONGO_URL=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-CLOUD_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-EMAIL_USER=your_smtp_email
-EMAIL_PASSWORD=your_smtp_password
+Start the API from `server`:
+
+```sh
+npm run dev
 ```
 
-Run the API:
+It listens on port `4000` by default. Set `PORT` to use another port.
 
-```bash
-npm run dev   # nodemon
-npm start     # production
-```
+### Storefront
 
-The server listens on `PORT` (default `5000`) and all routes are mounted under `/api`.
+In a second terminal:
 
-## Frontend Setup
-
-```bash
+```sh
 cd client
 npm install
 npm run dev
 ```
 
-The Vite dev server runs on `http://localhost:5173` by default.
+Vite serves the storefront at `http://localhost:5173` by default. The client can also be built with `npm run build`; `npm run preview` serves that build locally. Run `npm run lint` for the client lint check.
 
-Other scripts:
+## Configuration
 
-```bash
-npm run build     # production build
-npm run preview   # preview the production build
-npm run lint      # oxlint
-```
+The server reads its settings from `server/.env`. The sample file lists the accepted variables, including `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and `FRONTEND_URL`. Stripe checkout is available when configured; cash-on-delivery orders do not depend on Stripe.
 
-## API Overview
+## API routes
 
-| Method | Endpoint | Auth |
+All API routes use the `/api` prefix. Protected routes expect the JWT in the `token` header.
+
+| Method | Route | Access |
 |---|---|---|
-| POST | `/api/user/login` | No |
-| POST | `/api/user/verify` | No |
-| GET | `/api/user/me` | Yes |
-| GET | `/api/product/all` | No |
-| GET | `/api/product/:id` | No |
-| POST | `/api/product/new` | Yes |
-| PUT | `/api/product/:id` | Yes |
-| POST | `/api/product/:id` | Yes |
-| POST | `/api/cart/add` | Yes |
-| POST | `/api/cart/update` | Yes |
-| GET | `/api/cart/all` | Yes |
-| GET | `/api/cart/remove/:id` | Yes |
-| POST | `/api/address/add` | Yes |
-| GET | `/api/address/all` | Yes |
-| GET | `/api/address/:id` | Yes |
-| DELETE | `/api/address/delete/:id` | Yes |
-| POST | `/api/order/new/cod` | Yes |
-| GET | `/api/order/all` | Yes |
-| GET | `/api/order/admin/all` | Yes |
-| GET | `/api/order/:id` | Yes |
-| PUT | `/api/order/:id` | Yes |
-| GET | `/api/stats` | Yes |
+| GET | `/api/health` | Public |
+| POST | `/api/user/login` | Public |
+| POST | `/api/user/verify` | Public |
+| GET | `/api/user/me` | Signed in |
+| GET | `/api/product/all` | Public |
+| GET | `/api/product/:id` | Public |
+| POST | `/api/product/new` | Signed in; admin required |
+| PUT | `/api/product/:id` | Signed in; admin required |
+| POST | `/api/product/:id` | Signed in; admin required; image update |
+| DELETE | `/api/product/:id` | Signed in; admin required |
+| POST | `/api/cart/add` | Signed in |
+| POST | `/api/cart/update` | Signed in |
+| GET | `/api/cart/all` | Signed in |
+| GET | `/api/cart/remove/:id` | Signed in |
+| POST | `/api/address/new` | Signed in |
+| POST | `/api/address/add` | Signed in |
+| GET | `/api/address/all` | Signed in |
+| GET | `/api/address/:id` | Signed in |
+| PUT | `/api/address/:id` | Signed in |
+| DELETE | `/api/address/:id` | Signed in |
+| DELETE | `/api/address/delete/:id` | Signed in |
+| POST | `/api/order/new/cod` | Signed in |
+| POST | `/api/order/new/online` | Signed in; Stripe configured |
+| POST | `/api/order/verify/payment` | Signed in; Stripe configured |
+| POST | `/api/order/webhook/stripe` | Stripe signature |
+| GET | `/api/order/all` | Signed in |
+| GET | `/api/order/admin/all` | Signed in |
+| GET | `/api/order/:id` | Signed in |
+| POST or PUT | `/api/order/:id` | Signed in; admin required |
+| GET | `/api/stats` | Signed in; admin required |
 
-Authenticated requests send the JWT in the `token` header, matching the existing middleware contract.
+## Frontend notes
 
-## Frontend Conventions
-
-- Import alias: `@/` maps to `client/src/`.
-- Tailwind CSS is pinned to v3.4.19; do not upgrade to v4.
-- shadcn/ui components use the Tailwind-v3-compatible `default` style with Radix primitives.
-- Add new shadcn components from the `client` directory:
-
-```bash
-npx shadcn@latest add <component>
-```
+The client source is under `client/src`. Its `@/` import alias points to that directory. Styling uses Tailwind CSS 3.4 and the UI components use Radix primitives.

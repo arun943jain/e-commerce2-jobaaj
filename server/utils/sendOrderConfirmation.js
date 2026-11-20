@@ -1,16 +1,27 @@
-import {createTransport} from "nodemailer"
+import { createTransport } from "nodemailer";
+import { getEnv } from "./env.js";
 
-const sendOrderConfirmation = async({email, subject, orderId, products, totalAmount}) => {
-    const transport = createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASSWORD,
-        }
-    })
+const sendOrderConfirmation = async ({
+  email,
+  subject,
+  orderId,
+  products,
+  totalAmount,
+}) => {
+  const user = getEnv("EMAIL_USER", "Gmail");
+  const pass = getEnv("EMAIL_PASSWORD", "Password");
 
-    const productsHtml = products
+  const transport = createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user,
+      pass,
+    },
+  });
+
+  const productsHtml = products
     .map(
       (product) => `
             <tr>
@@ -95,12 +106,12 @@ const sendOrderConfirmation = async({email, subject, orderId, products, totalAmo
 </body>
 </html>`;
 
-    await transport.sendMail({
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: subject,
-        html
-    });
-}
+  await transport.sendMail({
+    from: user,
+    to: email,
+    subject,
+    html,
+  });
+};
 
 export default sendOrderConfirmation;
